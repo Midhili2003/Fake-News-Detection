@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Is this news <span class="grad">real or fake?</span></h1>
+  <p>Paste a news article and our machine-learning model will analyze its language in seconds.</p>
+  <div class="stats">
+    <div><strong>95%</strong><span>Accuracy</span></div>
+    <div><strong>6,335</strong><span>Articles trained on</span></div>
+    <div><strong>&lt;1s</strong><span>Prediction time</span></div>
+  </div>
+</section>
+
+<form class="card" method="post" action="{{ url_for('predict') }}" id="news-form">
+  {% if error %}<div class="alert">{{ error }}</div>{% endif %}
+
+  <label for="title">Headline <span class="muted">(optional)</span></label>
+  <input id="title" name="title" value="{{ title or '' }}" placeholder="e.g. Senate passes new budget bill">
+
+  <label for="text">Article text</label>
+  <textarea id="text" name="text" rows="9" placeholder="Paste the full article here...">{{ text or '' }}</textarea>
+  <div class="counter"><span id="count">0</span> words</div>
+
+  <div class="samples">
+    <span class="muted">Try a sample:</span>
+    <button type="button" class="chip chip-real" onclick="fillSample('real')">📰 Real-style</button>
+    <button type="button" class="chip chip-fake" onclick="fillSample('fake')">⚠️ Fake-style</button>
+    <button type="button" class="chip" onclick="clearForm()">✖ Clear</button>
+  </div>
+
+  <button type="submit" class="btn-primary" id="submit-btn">Analyze Article →</button>
+</form>
+
+<script>
+  const samples = {
+    real: {
+      title: "Senate advances budget bill after late-night vote",
+      text: "WASHINGTON (Reuters) - The U.S. Senate on Monday voted 52-48 to advance a budget bill, Republican leaders said, as Democrats pressed for amendments on healthcare spending. Senate Majority Leader Mitch McConnell told reporters the chamber would hold a final vote later this week. The White House said in a statement that the president supports the measure."
+    },
+    fake: {
+      title: "BREAKING: Hillary's secret emails EXPOSED — media silent!",
+      text: "Share this before it gets deleted! New emails reveal what the mainstream media will NEVER tell you about Hillary and the election. Insiders say the FBI is covering it all up. The elites don't want you to see this. Wake up America, the truth is finally coming out and they are terrified. Spread the word!"
+    }
+  };
+  const text = document.getElementById("text");
+  const count = document.getElementById("count");
+  const updateCount = () => count.textContent = text.value.trim() ? text.value.trim().split(/\s+/).length : 0;
+
+  function fillSample(kind) {
+    document.getElementById("title").value = samples[kind].title;
+    text.value = samples[kind].text;
+    updateCount();
+  }
+  function clearForm() {
+    document.getElementById("title").value = "";
+    text.value = "";
+    updateCount();
+  }
+  text.addEventListener("input", updateCount);
+  updateCount();
+
+  document.getElementById("news-form").addEventListener("submit", () => {
+    const btn = document.getElementById("submit-btn");
+    btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+    btn.disabled = true;
+  });
+</script>
+{% endblock %}

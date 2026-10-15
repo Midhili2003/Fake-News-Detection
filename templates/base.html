@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TruthLens · Fake News Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <a href="{{ url_for('home') }}" class="logo">🔍 Truth<span>Lens</span></a>
+    <span class="nav-tag">ML-powered news checker</span>
+  </nav>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

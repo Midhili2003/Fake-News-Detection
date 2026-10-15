@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+{% set is_fake = (label == "FAKE") %}
+
+<section class="card result {{ 'fake' if is_fake else 'real' }}">
+  <div class="result-top">
+    <div class="ring" style="--p: {{ confidence }};">
+      <div class="ring-inner">
+        <strong>{{ confidence }}%</strong>
+        <span>confidence</span>
+      </div>
+    </div>
+
+    <div class="result-text">
+      <span class="badge">{{ "⚠️ LIKELY FAKE" if is_fake else "✅ LIKELY REAL" }}</span>
+      <h2>{{ "This article shows signs of fake news." if is_fake else "This article reads like credible news." }}</h2>
+      <p class="muted">
+        {{ "The language resembles misleading or sensational articles the model was trained on."
+           if is_fake else
+           "The language resembles reporting from established news outlets." }}
+      </p>
+    </div>
+  </div>
+
+  <div class="words">
+    <div class="word-box">
+      <h3>🚩 Words pointing to FAKE</h3>
+      {% for w in fake_words %}<span class="tag tag-fake">{{ w }}</span>{% else %}<span class="muted">None found</span>{% endfor %}
+    </div>
+    <div class="word-box">
+      <h3>✔️ Words pointing to REAL</h3>
+      {% for w in real_words %}<span class="tag tag-real">{{ w }}</span>{% else %}<span class="muted">None found</span>{% endfor %}
+    </div>
+  </div>
+
+  <details class="preview">
+    <summary>View the article you submitted</summary>
+    {% if title %}<p><strong>{{ title }}</strong></p>{% endif %}
+    <p>{{ text }}{% if text|length >= 400 %}...{% endif %}</p>
+  </details>
+
+  <div class="actions">
+    <a href="{{ url_for('home') }}" class="btn-primary">← Check Another Article</a>
+  </div>
+</section>
+{% endblock %}
